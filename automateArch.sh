@@ -95,7 +95,7 @@ swapon "$P3"
 echo -e "${yellowColour}Installing base system and essential packages...${endColour}"
 pacstrap -K /mnt base linux linux-firmware \
     sudo nano git curl wget xdg-user-dirs \
-    pipewire pipewire-alsa pipewire-pulse wireplumber \
+    pulseaudio pulseaudio-alsa pavucontrol \
     bash-completion man-db man-pages \
     networkmanager base-devel
 
