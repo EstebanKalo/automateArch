@@ -1,0 +1,32 @@
+---
+componentName: archinstaller
+
+strings:
+    productName:         "Arch Linux"
+    shortProductName:    "Arch"
+    version:             2026.1
+    shortVersion:        2026.1
+    versionedName:       "ArchInstaller 2026.1"
+    shortVersionedName:  "ArchInstaller 2026.1"
+    bootloaderEntryName: "Arch Linux"
+    productUrl:          https://archlinux.org/
+    supportUrl:          https://wiki.archlinux.org/
+    knownIssuesUrl:      https://github.com/YOUR_USER/archinstaller/issues
+    releaseNotesUrl:     https://archlinux.org/news/
+
+images:
+    # Place your images in this directory. Calamares looks here.
+    # productLogo:    "logo.png"        # ~64x64 sidebar logo
+    # productIcon:    "icon.png"        # ~16x16 window icon
+    # productWelcome: "welcome.png"     # Large welcome page image
+
+style:
+    sidebarBackground:    "#333333"
+    sidebarText:          "#FFFFFF"
+    sidebarTextSelect:    "#1793D1"
+    sidebarTextHighlight: "#1793D1"
+
+slideshow: "qml/calamares-slideshow.qml"
+
+# If you don't have a QML slideshow, use a simple text fallback
+slideshowAPI: 2

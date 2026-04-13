@@ -1,0 +1,21 @@
+[Unit]
+Description=Create live session user
+Before=lightdm.service display-manager.service
+After=systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/bash -c '\
+    if ! id live &>/dev/null; then \
+        groupadd -r autologin; \
+        useradd -m -G wheel,autologin,storage,power,network,audio,video -s /bin/bash live; \
+        echo "live:" | chpasswd; \
+        echo "live ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/g_live; \
+        chmod 440 /etc/sudoers.d/g_live; \
+        cp /etc/skel/Desktop/install-archlinux.desktop /home/live/Desktop/ 2>/dev/null || true; \
+        chown -R live:live /home/live; \
+    fi'
+
+[Install]
+WantedBy=multi-user.target
