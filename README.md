@@ -1,113 +1,113 @@
-# ArchInstaller — Arch Linux GUI Installer ISO
+# ArchInstaller — ISO de Arch Linux con Instalador Gráfico
 
-A custom Arch Linux live ISO with [Calamares](https://calamares.io/) as a graphical installer.
-Boots into a lightweight Xfce desktop where the user launches Calamares to install a **clean, minimal Arch Linux system** — functional and ready to personalize.
+ISO live personalizada de Arch Linux con [Calamares](https://calamares.io/) como instalador gráfico.
+Bootea en un escritorio Xfce liviano donde el usuario lanza Calamares para instalar un **sistema Arch Linux limpio y mínimo** — funcional y listo para personalizar.
 
-## Philosophy
+## Filosofía
 
-- **Minimal and unopinionated**: installs `base`, `linux`, `linux-firmware`, networking, sudo, and a bootloader. Nothing else.
-- **The user decides**: no pre-installed DE, no theming, no bloat. The installed system is a blank canvas.
-- **Familiar UX**: Calamares provides the same GUI installer experience as Manjaro, EndeavourOS, etc.
+- **Mínimo y sin opiniones**: instala `base`, `linux`, `linux-firmware`, red, sudo y un bootloader. Nada más.
+- **El usuario decide**: sin DE preinstalado, sin temas, sin bloat. El sistema instalado es un lienzo en blanco.
+- **UX familiar**: Calamares ofrece la misma experiencia de instalador gráfico que Manjaro, EndeavourOS, etc.
 
-## What gets installed
+## Qué se instala
 
-| Component         | Choice                          |
+| Componente        | Elección                        |
 |-------------------|---------------------------------|
-| Kernel            | `linux` (latest stable)         |
+| Kernel            | `linux` (último estable)        |
 | Bootloader        | GRUB (EFI + BIOS)              |
-| Network           | NetworkManager                  |
+| Red               | NetworkManager                  |
 | Shell             | bash                            |
 | Init              | systemd                         |
-| AUR helper        | yay (optional, enabled by default) |
-| Microcode         | Auto-detected (AMD / Intel)     |
+| Helper AUR        | yay (opcional, habilitado por defecto) |
+| Microcódigo       | Auto-detectado (AMD / Intel)    |
 
-## Requirements
+## Requisitos
 
-To **build** the ISO you need an existing Arch Linux system (or any arch-based distro) with:
+Para **buildear** la ISO necesitás un sistema Arch Linux existente (o cualquier distro basada en Arch) con:
 
-- `archiso` (official ISO build tool)
+- `archiso` (herramienta oficial para construir ISOs)
 - `git`
-- Root privileges
-- ~6 GB of free disk space
-- Internet connection
+- Privilegios de root
+- ~6 GB de espacio libre en disco
+- Conexión a internet
 
-## Building the ISO
+## Construir la ISO
 
 ```bash
-git clone https://github.com/YOUR_USER/archinstaller.git
-cd archinstaller
+git clone https://github.com/EstebanKalo/automateArch.git
+cd automateArch
 sudo ./build.sh
 ```
 
-The ISO will be output to `./out/`.
+La ISO se genera en `./out/`.
 
-### Build options
+### Opciones de build
 
 ```bash
-sudo ./build.sh --no-yay        # Skip yay installation in target system
-sudo ./build.sh --clean          # Remove work directory before building
+sudo ./build.sh --no-yay         # No instalar yay en el sistema destino
+sudo ./build.sh --clean          # Limpiar directorio de trabajo antes de buildear
 ```
 
-## Burning the ISO
+## Grabar la ISO en USB
 
 ```bash
-# USB drive (replace /dev/sdX)
+# Pendrive USB (reemplazá /dev/sdX con tu dispositivo)
 sudo dd bs=4M if=out/archinstaller-*.iso of=/dev/sdX status=progress oflag=sync
 
-# Or use ventoy, balenaEtcher, etc.
+# O usá Ventoy, balenaEtcher, etc.
 ```
 
-## How it works
+## Cómo funciona
 
-1. User boots the ISO → auto-login to a live Xfce session
-2. Double-click "Install Arch Linux" on the desktop (or it auto-launches)
-3. Calamares walks through: Language → Keyboard → Partitioning → User setup → Install
-4. Behind the scenes, Calamares runs `pacstrap` to install a fresh Arch system (no image extraction)
-5. Post-install scripts handle: fstab, locale, bootloader, microcode, user creation, service enablement
-6. Reboot into a clean, minimal Arch installation
+1. El usuario bootea la ISO → auto-login a una sesión live de Xfce
+2. Doble clic en "Install Arch Linux" en el escritorio (o se abre automáticamente)
+3. Calamares guía paso a paso: Idioma → Teclado → Particionado → Configuración de usuario → Instalar
+4. Por detrás, Calamares ejecuta `pacstrap` para instalar un sistema Arch limpio (sin extracción de imagen)
+5. Scripts de post-instalación configuran: fstab, locale, bootloader, microcódigo, creación de usuario, habilitación de servicios
+6. Reinicio a una instalación de Arch limpia y mínima
 
-## Project Structure
+## Estructura del proyecto
 
 ```
-archinstaller/
-├── build.sh                          # ISO build script
+automateArch/
+├── build.sh                          # Script de construcción de la ISO
 ├── README.md
 └── profile/
-    ├── profiledef.sh                 # archiso profile definition
-    ├── packages.x86_64               # Packages for the LIVE environment
-    ├── pacman.conf                   # pacman.conf used during ISO build
-    └── airootfs/                     # Overlay for the live filesystem
+    ├── profiledef.sh                 # Definición del perfil archiso
+    ├── packages.x86_64               # Paquetes para el entorno LIVE
+    ├── pacman.conf                   # pacman.conf usado durante el build de la ISO
+    └── airootfs/                     # Overlay para el filesystem live
         └── etc/
             ├── calamares/
-            │   ├── settings.conf     # Calamares main config (module sequence)
-            │   ├── branding/         # UI branding (name, logo, colors)
-            │   ├── modules/          # Per-module configuration
-            │   └── scripts/          # Shell scripts called by Calamares
-            ├── skel/Desktop/         # Desktop shortcut for installer
-            ├── systemd/system/       # Auto-login config
-            └── xdg/autostart/        # Auto-launch Calamares on login
+            │   ├── settings.conf     # Config principal de Calamares (secuencia de módulos)
+            │   ├── branding/         # Branding de la UI (nombre, logo, colores)
+            │   ├── modules/          # Configuración por módulo
+            │   └── scripts/          # Scripts de shell llamados por Calamares
+            ├── skel/Desktop/         # Acceso directo del instalador en el escritorio
+            ├── systemd/system/       # Configuración de auto-login
+            └── xdg/autostart/        # Auto-lanzamiento de Calamares al iniciar sesión
 ```
 
-## Customization
+## Personalización
 
-### Change installed packages
+### Cambiar paquetes instalados
 
-Edit `profile/airootfs/etc/calamares/scripts/pacstrap.sh` — the `PACKAGES` array defines what gets installed on the target system.
+Editá `profile/airootfs/etc/calamares/scripts/pacstrap.sh` — el array `PACKAGES` define qué se instala en el sistema destino.
 
-### Change branding
+### Cambiar el branding
 
-Edit `profile/airootfs/etc/calamares/branding/archinstaller/branding.desc` for names, descriptions, and colors.
+Editá `profile/airootfs/etc/calamares/branding/archinstaller/branding.desc` para cambiar nombres, descripciones y colores.
 
-### Add a post-install hook
+### Agregar un hook de post-instalación
 
-Edit `profile/airootfs/etc/calamares/scripts/post-install.sh` to add commands that run inside the installed system (via arch-chroot).
+Editá `profile/airootfs/etc/calamares/scripts/post-install.sh` para agregar comandos que se ejecuten dentro del sistema instalado (vía arch-chroot).
 
-## License
+## Licencia
 
 MIT
 
-## Credits
+## Créditos
 
-- [Arch Linux](https://archlinux.org/) and [archiso](https://wiki.archlinux.org/title/Archiso)
-- [Calamares](https://calamares.io/) installer framework
-- Inspired by EndeavourOS and Manjaro's installer workflows
+- [Arch Linux](https://archlinux.org/) y [archiso](https://wiki.archlinux.org/title/Archiso)
+- Framework de instalación [Calamares](https://calamares.io/)
+- Inspirado en los flujos de instalación de EndeavourOS y Manjaro
