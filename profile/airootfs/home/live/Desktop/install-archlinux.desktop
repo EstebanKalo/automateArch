@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install Arch Linux
+Comment=Launch the ArchInstaller Calamares installer
+Exec=pkexec calamares
+Icon=calamares
+Terminal=false
+Categories=System;

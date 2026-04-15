@@ -1,0 +1,9 @@
+root:x:0:root
+wheel:x:998:live
+autologin:x:997:live
+storage:x:996:live
+power:x:995:live
+network:x:994:live
+audio:x:993:live
+video:x:992:live
+live:x:1000:

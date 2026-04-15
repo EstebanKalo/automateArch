@@ -9,16 +9,14 @@ strings:
     versionedName:       "ArchInstaller 2026.1"
     shortVersionedName:  "ArchInstaller 2026.1"
     bootloaderEntryName: "Arch Linux"
-    productUrl:          https://archlinux.org/
-    supportUrl:          https://wiki.archlinux.org/
-    knownIssuesUrl:      https://github.com/YOUR_USER/archinstaller/issues
-    releaseNotesUrl:     https://archlinux.org/news/
+    productUrl:          "https://archlinux.org/"
+    supportUrl:          "https://wiki.archlinux.org/"
+    knownIssuesUrl:      "https://github.com/EstebanKalo/automateArch/issues"
+    releaseNotesUrl:     "https://archlinux.org/news/"
 
 images:
-    # Place your images in this directory. Calamares looks here.
-    # productLogo:    "logo.png"        # ~64x64 sidebar logo
-    # productIcon:    "icon.png"        # ~16x16 window icon
-    # productWelcome: "welcome.png"     # Large welcome page image
+    productLogo:         "/usr/share/icons/hicolor/scalable/apps/calamares.svg"
+    productIcon:         "/usr/share/icons/hicolor/scalable/apps/calamares.svg"
 
 style:
     sidebarBackground:    "#333333"
@@ -26,7 +24,5 @@ style:
     sidebarTextSelect:    "#1793D1"
     sidebarTextHighlight: "#1793D1"
 
-slideshow: "qml/calamares-slideshow.qml"
-
-# If you don't have a QML slideshow, use a simple text fallback
+slideshow: []
 slideshowAPI: 2
