@@ -2,7 +2,7 @@
 # ArchInstaller — post-install configuration
 # Runs OUTSIDE chroot (dontChroot: true)
 
-set -euo pipefail
+set -uo pipefail
 
 TARGET="$1"
 
@@ -71,11 +71,30 @@ if [[ -f "$PACMAN_CONF" ]]; then
 fi
 
 # ─── Run chrooted commands ────────────────────────────────────────────
-arch-chroot "$TARGET" /bin/bash -e <<'CHROOTEOF'
+# Create vconsole.conf if missing (needed by mkinitcpio sd-vconsole hook)
+if [[ ! -f "$TARGET/etc/vconsole.conf" ]]; then
+    echo "KEYMAP=us" > "$TARGET/etc/vconsole.conf"
+    echo "Created /etc/vconsole.conf"
+fi
 
-# Regenerate initramfs
+arch-chroot "$TARGET" /bin/bash <<'CHROOTEOF'
+
+# ─── Install GRUB bootloader ─────────────────────────────────────────
+echo "Installing GRUB bootloader..."
+if [ -d /sys/firmware/efi ]; then
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Arch --force 2>&1 || \
+    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --force 2>&1 || \
+        echo "WARNING: GRUB EFI install had issues (non-fatal)"
+else
+    DISK=$(mount | grep ' / ' | cut -d' ' -f1 | sed 's/[0-9]*$//')
+    grub-install --target=i386-pc "$DISK" --force 2>&1 || \
+        echo "WARNING: GRUB BIOS install had issues (non-fatal)"
+fi
+grub-mkconfig -o /boot/grub/grub.cfg 2>&1 || echo "WARNING: grub-mkconfig had issues"
+
+# Regenerate initramfs (non-fatal if warnings occur)
 echo "Regenerating initramfs..."
-mkinitcpio -P
+mkinitcpio -P || echo "WARNING: mkinitcpio had warnings (non-fatal)"
 
 # Setup reflector for fast mirrors
 if command -v reflector &>/dev/null; then

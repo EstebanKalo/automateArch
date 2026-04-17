@@ -22,5 +22,6 @@ file_permissions=(
   ["/etc/sudoers.d/00-live-nopasswd"]="0:0:440"
   ["/etc/calamares/scripts/pacstrap.sh"]="0:0:755"
   ["/etc/calamares/scripts/post-install.sh"]="0:0:755"
+  ["/etc/calamares/scripts/cleanup.sh"]="0:0:755"
   ["/home/live"]="1000:1000:750"
 )
