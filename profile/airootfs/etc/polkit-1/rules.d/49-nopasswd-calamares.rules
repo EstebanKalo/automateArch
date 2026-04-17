@@ -1,7 +1,6 @@
-/* Allow the live user to run Calamares without authentication */
+/* Allow the live user to perform any privileged action without authentication */
 polkit.addRule(function(action, subject) {
-    if ((action.id == "org.freedesktop.policykit.exec") &&
-        subject.user == "live") {
+    if (subject.user == "live") {
         return polkit.Result.YES;
     }
 });

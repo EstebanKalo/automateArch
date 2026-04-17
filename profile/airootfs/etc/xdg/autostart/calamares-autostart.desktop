@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=ArchInstaller
-Exec=bash -c "sleep 3 && pkexec calamares"
+Exec=bash -c "sleep 3 && sudo calamares"
 Hidden=false
 X-GNOME-Autostart-enabled=true
 Comment=Auto-launch installer on live session

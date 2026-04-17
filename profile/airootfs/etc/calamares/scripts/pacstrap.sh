@@ -1,15 +1,19 @@
 #!/bin/bash
 # ArchInstaller — pacstrap script
 # Called by Calamares shellprocess@pacstrap
-# Argument: $1 = target mountpoint (@@ROOT@@)
 
 set -euo pipefail
 
 TARGET="$1"
 
-if [[ -z "$TARGET" || ! -d "$TARGET" ]]; then
-    echo "ERROR: Invalid target mountpoint: '$TARGET'"
-    exit 1
+# If @@ROOT@@ was not substituted, auto-detect the mountpoint
+if [[ -z "$TARGET" || "$TARGET" == "@@ROOT@@" || ! -d "$TARGET" ]]; then
+    TARGET=$(find /tmp -maxdepth 1 -name "calamares-root-*" -type d 2>/dev/null | head -1)
+    if [[ -z "$TARGET" || ! -d "$TARGET" ]]; then
+        echo "ERROR: Cannot find Calamares target mountpoint"
+        exit 1
+    fi
+    echo "Auto-detected target mountpoint: $TARGET"
 fi
 
 # ─── Base packages (always installed) ─────────────────────────────────
@@ -72,8 +76,38 @@ case "$VIRT" in
     *)          echo "Not a recognized VM (or bare metal): $VIRT" ;;
 esac
 
+# ─── Ensure mirrorlist has active mirrors ─────────────────────────────
+if ! grep -q '^Server' /etc/pacman.d/mirrorlist; then
+    echo "No active mirrors found. Setting up mirrors..."
+    if command -v reflector &>/dev/null; then
+        reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist || \
+            sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist
+    else
+        sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist
+    fi
+    echo "Mirrors configured: $(grep -c '^Server' /etc/pacman.d/mirrorlist) active servers"
+fi
+
+# ─── Fix live system pacman.conf (remove custom repo from Docker) ─────
+if grep -q '\[custom\]' /etc/pacman.conf; then
+    sed -i '/\[custom\]/,/^$/d' /etc/pacman.conf
+    echo "Removed [custom] repo from live pacman.conf"
+fi
+
+# ─── Initialize pacman keyring on live system if needed ───────────────
+if [[ ! -d /etc/pacman.d/gnupg ]] || ! pacman-key --list-keys &>/dev/null; then
+    echo "Initializing pacman keyring..."
+    pacman-key --init
+    pacman-key --populate archlinux
+fi
+
 # ─── Run pacstrap ─────────────────────────────────────────────────────
 echo "Installing ${#PACKAGES[@]} packages to $TARGET ..."
-pacstrap -K "$TARGET" "${PACKAGES[@]}"
+pacstrap "$TARGET" "${PACKAGES[@]}"
 
 echo "pacstrap completed successfully."
+
+# ─── Ensure directories exist for Calamares modules ───────────────────
+mkdir -p "$TARGET/etc/sudoers.d"
+chmod 750 "$TARGET/etc/sudoers.d"
+echo "Created /etc/sudoers.d in target."

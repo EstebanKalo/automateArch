@@ -3,7 +3,7 @@
 
 iso_name="archinstaller"
 iso_label="ARCHINSTALLER_$(date +%Y%m)"
-iso_publisher="ArchInstaller <https://github.com/YOUR_USER/archinstaller>"
+iso_publisher="ArchInstaller <https://github.com/EstebanKalo/automateArch>"
 iso_application="ArchInstaller Live Environment"
 iso_version="$(date +%Y.%m.%d)"
 install_dir="arch"
